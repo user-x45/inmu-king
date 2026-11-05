@@ -64,6 +64,23 @@ footer{margin-top:28px;color:var(--mut);font-size:11px;text-align:center}
 .theme{color:var(--fg)}
 .theme:hover{background:var(--line)}
 @media(max-width:560px){.vol{display:none}.big i{width:60px;height:60px}}
+
+@media(max-width:560px),(pointer:coarse){
+.ctrl{padding:36px 10px calc(8px + env(safe-area-inset-bottom,0px))}
+.row{gap:2px;margin-top:0}
+button{width:44px;height:44px;padding:0;justify-content:center;border-radius:50%;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:hover{background:none}
+button:active{background:rgba(255,255,255,.22);transform:scale(.92)}
+button svg{width:26px;height:26px}
+#pp{background:rgba(255,255,255,.16)}
+#pp svg{width:28px;height:28px}
+#mute,.vol,.keys{display:none}
+.time{font-size:13px;margin:0 6px}
+.spd{width:auto;min-width:44px;border-radius:22px;padding:0 8px;font-size:14px;font-weight:800}
+.big i{width:68px;height:68px}
+.big svg{width:30px;height:30px}
+.theme{width:40px;height:40px;background:none}
+}
 </style>
 </head>
 <body>
@@ -116,7 +133,9 @@ v.addEventListener('play',()=>{pl.classList.add('playing');$('ppi').setAttribute
 v.addEventListener('pause',()=>{pl.classList.remove('playing','idle');$('ppi').setAttribute('d',P)});
 ['timeupdate','progress','loadedmetadata','durationchange'].forEach(e=>v.addEventListener(e,upd));
 v.addEventListener('waiting',()=>$('spin').style.display='block');
-['playing','canplay'].forEach(e=>v.addEventListener(e,()=>$('spin').style.display='none'));
+v.addEventListener('seeking',()=>$('spin').style.display='block');
+v.addEventListener('seeked',()=>{if(v.readyState>=3)$('spin').style.display='none'});
+['playing','canplay','canplaythrough'].forEach(e=>v.addEventListener(e,()=>$('spin').style.display='none'));
 v.addEventListener('error',()=>{$('msg').style.display='flex';$('spin').style.display='none'});
 $('big').onclick=toggle;v.onclick=toggle;$('pp').onclick=toggle;
 v.ondblclick=()=>fs();
