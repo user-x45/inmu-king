@@ -29,11 +29,14 @@ video{width:100%;height:100%;display:block;background:#000;object-fit:contain}
 .player.playing .big{background:transparent}
 .player.playing .big i{opacity:0;transform:scale(.8);pointer-events:none}
 .ctrl{position:absolute;left:0;right:0;bottom:0;padding:26px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;transition:opacity .25s}
-.player.playing.idle .ctrl{opacity:0}
+.player.playing.idle:not(.seeking) .ctrl{opacity:0}
 .player.playing.idle{cursor:none}
-.bar{position:relative;height:18px;display:flex;align-items:center;cursor:pointer;touch-action:none}
+.bar{position:relative;height:34px;display:flex;align-items:center;cursor:pointer;touch-action:none}
 .track{position:relative;width:100%;height:4px;background:rgba(255,255,255,.25);border-radius:2px;transition:height .1s}
-.bar:hover .track{height:7px}
+.bar:hover .track,.player.seeking .track{height:7px}
+.player.seeking .prog::after{width:18px;height:18px;margin-top:-9px;right:-9px}
+.tip{bottom:32px!important}
+@media(pointer:coarse){.track{height:6px}.prog::after{width:16px;height:16px;margin-top:-8px;right:-8px}}
 .buf,.prog{position:absolute;left:0;top:0;bottom:0;border-radius:2px}
 .buf{background:rgba(255,255,255,.3)}
 .prog{background:var(--acc)}
@@ -103,10 +106,10 @@ footer{margin-top:28px;color:var(--mut);font-size:11px;text-align:center}
 <footer>© YAJU-MC / INMU KING</footer>
 </div>
 <script>
-const $=id=>document.getElementById(id),v=$('v'),pl=$('pl');
+const $=id=>document.getElementById(id),v=$('v'),pl=$('pl');let drag=false;
 const fmt=t=>{if(!isFinite(t))return'0:00';const m=Math.floor(t/60),s=Math.floor(t%60);return m+':'+String(s).padStart(2,'0')};
 const P='M8 5v14l11-7z',U='M6 5h4v14H6zm8 0h4v14h-4z';
-function upd(){const d=v.duration||0;$('prog').style.width=d?v.currentTime/d*100+'%':'0';$('time').textContent=fmt(v.currentTime)+' / '+fmt(d);
+function upd(){if(drag)return;const d=v.duration||0;$('prog').style.width=d?v.currentTime/d*100+'%':'0';$('time').textContent=fmt(v.currentTime)+' / '+fmt(d);
  if(v.buffered.length&&d)$('buf').style.width=v.buffered.end(v.buffered.length-1)/d*100+'%'}
 function toggle(){v.paused?v.play().catch(()=>{}):v.pause()}
 v.addEventListener('play',()=>{pl.classList.add('playing');$('ppi').setAttribute('d',U)});
@@ -129,13 +132,19 @@ function loop(){v.loop=!v.loop;$('loop').classList.toggle('on',v.loop)}
 $('loop').onclick=loop;
 const sp=[1,1.25,1.5,2,0.5,0.75];let si=0;
 $('spd').onclick=()=>{si=(si+1)%sp.length;v.playbackRate=sp[si];$('spd').textContent=sp[si]+'x'};
-const bar=$('bar');let drag=false;
-function seek(e){const r=bar.getBoundingClientRect(),x=Math.min(Math.max((e.clientX-r.left)/r.width,0),1);if(v.duration)v.currentTime=x*v.duration}
-bar.addEventListener('pointerdown',e=>{drag=true;bar.setPointerCapture(e.pointerId);seek(e)});
-bar.addEventListener('pointermove',e=>{const r=bar.getBoundingClientRect(),x=Math.min(Math.max((e.clientX-r.left)/r.width,0),1);
- $('tip').style.display='block';$('tip').style.left=x*100+'%';$('tip').textContent=fmt(x*(v.duration||0));if(drag)seek(e)});
-bar.addEventListener('pointerup',()=>drag=false);
-bar.addEventListener('pointerleave',()=>$('tip').style.display='none');
+const bar=$('bar');let lastSeek=0,dx=0;
+function xr(e){const r=bar.getBoundingClientRect();return Math.min(Math.max((e.clientX-r.left)/r.width,0),1)}
+function vis(x){const d=v.duration||0;$('prog').style.width=x*100+'%';$('time').textContent=fmt(x*d)+' / '+fmt(d);
+ $('tip').style.display='block';$('tip').style.left=x*100+'%';$('tip').textContent=fmt(x*d)}
+function endDrag(){if(!drag)return;drag=false;if(v.duration)v.currentTime=dx*v.duration;$('tip').style.display='none';pl.classList.remove('seeking')}
+bar.addEventListener('pointerdown',e=>{if(!v.duration)return;drag=true;pl.classList.add('seeking');try{bar.setPointerCapture(e.pointerId)}catch(_){}
+ dx=xr(e);vis(dx);e.preventDefault()});
+bar.addEventListener('pointermove',e=>{const x=xr(e);
+ if(drag){dx=x;vis(x);const n=performance.now();
+  if(n-lastSeek>150){lastSeek=n;if(v.fastSeek)v.fastSeek(x*v.duration);else v.currentTime=x*v.duration}}
+ else if(e.pointerType==='mouse'){$('tip').style.display='block';$('tip').style.left=x*100+'%';$('tip').textContent=fmt(x*(v.duration||0))}});
+['pointerup','pointercancel','lostpointercapture'].forEach(t=>bar.addEventListener(t,endDrag));
+bar.addEventListener('pointerleave',()=>{if(!drag)$('tip').style.display='none'});
 let it;function wake(){pl.classList.remove('idle');clearTimeout(it);it=setTimeout(()=>{if(!v.paused)pl.classList.add('idle')},2500)}
 ['mousemove','touchstart','keydown'].forEach(e=>pl.addEventListener(e,wake));
 document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'&&e.target.type!=='range')return;
