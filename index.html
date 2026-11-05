@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>INMU KING – YAJU-MC</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f4f1ec;--fg:#16120d;--mut:#6b6358;--acc:#d6232a;--card:#fff;--line:#ddd6ca}
+:root:not([data-theme="light"]){}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0a09;--fg:#f3eee6;--mut:#9a9184;--acc:#ff3b3b;--card:#16130f;--line:#2b2620}}
+:root[data-theme="dark"]{--bg:#0b0a09;--fg:#f3eee6;--mut:#9a9184;--acc:#ff3b3b;--card:#16130f;--line:#2b2620}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:20px 16px 40px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.logo{font-weight:900;letter-spacing:.15em;font-size:13px;color:var(--mut)}
+.logo b{color:var(--acc)}
+h1{font-size:clamp(40px,12vw,88px);line-height:.95;margin:0 0 6px;font-weight:900;letter-spacing:-.02em;text-transform:uppercase}
+h1 span{color:var(--acc)}
+.artist{color:var(--mut);margin:0 0 20px;font-size:15px;letter-spacing:.08em}
+.player{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;user-select:none;-webkit-user-select:none}
+.player:fullscreen{border-radius:0;aspect-ratio:auto}
+video{width:100%;height:100%;display:block;background:#000;object-fit:contain}
+.big{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:pointer;background:linear-gradient(transparent 55%,rgba(0,0,0,.35))}
+.big i{width:76px;height:76px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 30px rgba(0,0,0,.5);transition:transform .15s}
+.big:hover i{transform:scale(1.08)}
+.big svg{width:32px;height:32px;fill:#fff;margin-left:4px}
+.player.playing .big{background:transparent}
+.player.playing .big i{opacity:0;transform:scale(.8);pointer-events:none}
+.ctrl{position:absolute;left:0;right:0;bottom:0;padding:26px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;transition:opacity .25s}
+.player.playing.idle .ctrl{opacity:0}
+.player.playing.idle{cursor:none}
+.bar{position:relative;height:18px;display:flex;align-items:center;cursor:pointer;touch-action:none}
+.track{position:relative;width:100%;height:4px;background:rgba(255,255,255,.25);border-radius:2px;transition:height .1s}
+.bar:hover .track{height:7px}
+.buf,.prog{position:absolute;left:0;top:0;bottom:0;border-radius:2px}
+.buf{background:rgba(255,255,255,.3)}
+.prog{background:var(--acc)}
+.prog::after{content:"";position:absolute;right:-6px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#fff}
+.tip{position:absolute;bottom:20px;transform:translateX(-50%);background:#000;color:#fff;font-size:11px;padding:2px 6px;border-radius:4px;display:none;pointer-events:none}
+.row{display:flex;align-items:center;gap:4px;margin-top:2px}
+.row .sp{flex:1}
+button{background:none;border:0;color:inherit;cursor:pointer;padding:6px;border-radius:8px;display:flex;align-items:center;font:inherit}
+button:hover{background:rgba(255,255,255,.15)}
+button svg{width:22px;height:22px;fill:currentColor}
+button.on{color:var(--acc)}
+.time{font-size:12.5px;font-variant-numeric:tabular-nums;margin:0 8px;white-space:nowrap}
+.vol{width:70px;accent-color:var(--acc)}
+.spd{font-size:12.5px;font-weight:700;min-width:44px;justify-content:center}
+.msg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:20px;color:#fff;background:rgba(0,0,0,.8);font-size:14px;line-height:1.7}
+.msg a{color:var(--acc)}
+.spin{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px;border:4px solid rgba(255,255,255,.25);border-top-color:var(--acc);border-radius:50%;animation:s 1s linear infinite;display:none;pointer-events:none}
+@keyframes s{to{transform:rotate(360deg)}}
+.info{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.info dt{font-size:11px;letter-spacing:.12em;color:var(--mut);margin-bottom:3px}
+.info dd{margin:0;font-weight:700}
+.keys{margin-top:14px;font-size:12px;color:var(--mut);line-height:1.9}
+kbd{border:1px solid var(--line);background:var(--card);border-radius:4px;padding:0 6px;font-family:inherit;font-size:11px}
+footer{margin-top:28px;color:var(--mut);font-size:11px;text-align:center}
+.theme{color:var(--fg)}
+.theme:hover{background:var(--line)}
+@media(max-width:560px){.vol{display:none}.big i{width:60px;height:60px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo">YAJU-MC <b>●</b> OFFICIAL MV VIEWER</div>
+  <button class="theme" id="theme" title="テーマ切替" aria-label="テーマ切替"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zm0 16V5a7 7 0 010 14z"/></svg></button>
+</header>
+<h1>INMU <span>KING</span></h1>
+<p class="artist">YAJU-MC</p>
+
+<div class="player" id="pl" tabindex="0">
+  <video id="v" preload="metadata" playsinline src="https://files.catbox.moe/sbpso8.mp4"></video>
+  <div class="spin" id="spin"></div>
+  <div class="big" id="big"><i><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></i></div>
+  <div class="msg" id="msg"><div>動画を読み込めませんでした。<br><a href="https://files.catbox.moe/sbpso8.mp4" target="_blank" rel="noopener">直接MP4を開く</a></div></div>
+  <div class="ctrl" id="ctrl">
+    <div class="bar" id="bar"><div class="track"><div class="buf" id="buf"></div><div class="prog" id="prog"></div></div><div class="tip" id="tip">0:00</div></div>
+    <div class="row">
+      <button id="pp" aria-label="再生/一時停止"><svg viewBox="0 0 24 24"><path id="ppi" d="M8 5v14l11-7z"/></svg></button>
+      <button id="back" aria-label="10秒戻る"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7a6 6 0 11-6 6H4a8 8 0 108-8z"/></svg></button>
+      <button id="fwd" aria-label="10秒進む"><svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7a6 6 0 106 6h2a8 8 0 11-8-8z"/></svg></button>
+      <button id="mute" aria-label="ミュート"><svg viewBox="0 0 24 24"><path id="mi" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8v8a4.5 4.5 0 002.5-4z"/></svg></button>
+      <input class="vol" id="vol" type="range" min="0" max="1" step="0.02" value="1" aria-label="音量">
+      <span class="time" id="time">0:00 / 0:00</span>
+      <span class="sp"></span>
+      <button id="loop" aria-label="ループ" title="ループ"><svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg></button>
+      <button class="spd" id="spd" title="再生速度">1x</button>
+      <button id="fs" aria-label="全画面"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<dl class="info">
+  <div><dt>TITLE</dt><dd>INMU KING</dd></div>
+  <div><dt>ARTIST</dt><dd>YAJU-MC</dd></div>
+  <div><dt>FORMAT</dt><dd>Music Video / MP4</dd></div>
+</dl>
+<div class="keys"><kbd>Space</kbd> 再生/停止　<kbd>←</kbd><kbd>→</kbd> 5秒移動　<kbd>↑</kbd><kbd>↓</kbd> 音量　<kbd>M</kbd> ミュート　<kbd>F</kbd> 全画面　<kbd>L</kbd> ループ</div>
+<footer>© YAJU-MC / INMU KING</footer>
+</div>
+<script>
+const $=id=>document.getElementById(id),v=$('v'),pl=$('pl');
+const fmt=t=>{if(!isFinite(t))return'0:00';const m=Math.floor(t/60),s=Math.floor(t%60);return m+':'+String(s).padStart(2,'0')};
+const P='M8 5v14l11-7z',U='M6 5h4v14H6zm8 0h4v14h-4z';
+function upd(){const d=v.duration||0;$('prog').style.width=d?v.currentTime/d*100+'%':'0';$('time').textContent=fmt(v.currentTime)+' / '+fmt(d);
+ if(v.buffered.length&&d)$('buf').style.width=v.buffered.end(v.buffered.length-1)/d*100+'%'}
+function toggle(){v.paused?v.play().catch(()=>{}):v.pause()}
+v.addEventListener('play',()=>{pl.classList.add('playing');$('ppi').setAttribute('d',U)});
+v.addEventListener('pause',()=>{pl.classList.remove('playing','idle');$('ppi').setAttribute('d',P)});
+['timeupdate','progress','loadedmetadata','durationchange'].forEach(e=>v.addEventListener(e,upd));
+v.addEventListener('waiting',()=>$('spin').style.display='block');
+['playing','canplay'].forEach(e=>v.addEventListener(e,()=>$('spin').style.display='none'));
+v.addEventListener('error',()=>{$('msg').style.display='flex';$('spin').style.display='none'});
+$('big').onclick=toggle;v.onclick=toggle;$('pp').onclick=toggle;
+v.ondblclick=()=>fs();
+$('back').onclick=()=>v.currentTime=Math.max(0,v.currentTime-10);
+$('fwd').onclick=()=>v.currentTime=Math.min(v.duration||0,v.currentTime+10);
+function mute(){v.muted=!v.muted;vi()}
+function vi(){$('mi').setAttribute('d',(v.muted||v.volume===0)?'M3 9v6h4l5 5V4L7 9H3zm13 .6L14.6 11 16 12.4 14.6 13.8 16 15.2l1.4-1.4 1.4 1.4 1.4-1.4-1.4-1.4 1.4-1.4-1.4-1.4-1.4 1.4z':'M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8v8a4.5 4.5 0 002.5-4z')}
+$('mute').onclick=mute;
+$('vol').oninput=e=>{v.volume=+e.target.value;v.muted=false;vi()};
+function fs(){document.fullscreenElement?document.exitFullscreen():(pl.requestFullscreen||pl.webkitRequestFullscreen||(()=>v.webkitEnterFullscreen&&v.webkitEnterFullscreen())).call(pl)}
+$('fs').onclick=fs;
+function loop(){v.loop=!v.loop;$('loop').classList.toggle('on',v.loop)}
+$('loop').onclick=loop;
+const sp=[1,1.25,1.5,2,0.5,0.75];let si=0;
+$('spd').onclick=()=>{si=(si+1)%sp.length;v.playbackRate=sp[si];$('spd').textContent=sp[si]+'x'};
+const bar=$('bar');let drag=false;
+function seek(e){const r=bar.getBoundingClientRect(),x=Math.min(Math.max((e.clientX-r.left)/r.width,0),1);if(v.duration)v.currentTime=x*v.duration}
+bar.addEventListener('pointerdown',e=>{drag=true;bar.setPointerCapture(e.pointerId);seek(e)});
+bar.addEventListener('pointermove',e=>{const r=bar.getBoundingClientRect(),x=Math.min(Math.max((e.clientX-r.left)/r.width,0),1);
+ $('tip').style.display='block';$('tip').style.left=x*100+'%';$('tip').textContent=fmt(x*(v.duration||0));if(drag)seek(e)});
+bar.addEventListener('pointerup',()=>drag=false);
+bar.addEventListener('pointerleave',()=>$('tip').style.display='none');
+let it;function wake(){pl.classList.remove('idle');clearTimeout(it);it=setTimeout(()=>{if(!v.paused)pl.classList.add('idle')},2500)}
+['mousemove','touchstart','keydown'].forEach(e=>pl.addEventListener(e,wake));
+document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'&&e.target.type!=='range')return;
+ const k=e.key;let h=true;
+ if(k===' '||k==='k')toggle();
+ else if(k==='ArrowLeft')v.currentTime-=5;
+ else if(k==='ArrowRight')v.currentTime+=5;
+ else if(k==='ArrowUp'){v.volume=Math.min(1,v.volume+.1);$('vol').value=v.volume}
+ else if(k==='ArrowDown'){v.volume=Math.max(0,v.volume-.1);$('vol').value=v.volume}
+ else if(k==='m'||k==='M')mute();
+ else if(k==='f'||k==='F')fs();
+ else if(k==='l'||k==='L')loop();
+ else h=false;
+ if(h){e.preventDefault();wake()}});
+$('theme').onclick=()=>{const r=document.documentElement,d=matchMedia('(prefers-color-scheme:dark)').matches;
+ const cur=r.dataset.theme||(d?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark'};
+</script>
+</body>
+</html>
