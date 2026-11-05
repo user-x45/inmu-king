@@ -133,14 +133,9 @@ function ahead(){const t=v.currentTime,b=v.buffered;for(let i=0;i<b.length;i++)i
 let hs=0;function startHold(){hold=true;hs=performance.now()}
 function ready(){const d=v.duration||0;return v.readyState>=3&&(ahead()>=3||v.currentTime+ahead()>=d-.3)}
 function check(){if(!hold||drag)return;const w=performance.now()-hs;if(ready()||(w>2000&&v.readyState>=2)||w>5000){hold=false;$('spin').style.display='none';v.play().catch(()=>{})}else $('spin').style.display='block'}
-['progress','canplay','canplaythrough','loadeddata','seeked','timeupdate'].forEach(e=>v.addEventListener(e,check));
-setInterval(check,300);
-function toggle(){
- if(hold){hold=false;$('spin').style.display='none';setUI(false);return}
- if(v.paused){if(ready())v.play().catch(()=>{});else{startHold();setUI(true);check()}}
- else v.pause()}
+function toggle(){if(v.paused)v.play().catch(()=>setUI(false));else v.pause()}
 v.addEventListener('play',()=>setUI(true));
-v.addEventListener('pause',()=>{if(!hold)setUI(false)});
+v.addEventListener('pause',()=>{if(!drag)setUI(false)});
 ['timeupdate','progress','loadedmetadata','durationchange'].forEach(e=>v.addEventListener(e,upd));
 v.addEventListener('waiting',()=>$('spin').style.display='block');
 v.addEventListener('seeking',()=>$('spin').style.display='block');
@@ -165,8 +160,8 @@ const bar=$('bar');let lastSeek=0,dx=0;
 function xr(e){const r=bar.getBoundingClientRect();return Math.min(Math.max((e.clientX-r.left)/r.width,0),1)}
 function vis(x){const d=v.duration||0;$('prog').style.width=x*100+'%';$('time').textContent=fmt(x*d)+' / '+fmt(d);
  $('tip').style.display='block';$('tip').style.left=x*100+'%';$('tip').textContent=fmt(x*d)}
-function endDrag(){if(!drag)return;drag=false;if(v.duration)v.currentTime=dx*v.duration;if(resume){startHold();setUI(true);check()}$('tip').style.display='none';pl.classList.remove('seeking')}
-bar.addEventListener('pointerdown',e=>{if(!v.duration)return;drag=true;resume=!v.paused||hold;if(!v.paused){startHold();v.pause()}pl.classList.add('seeking');try{bar.setPointerCapture(e.pointerId)}catch(_){}
+function endDrag(){if(!drag)return;drag=false;if(v.duration)v.currentTime=dx*v.duration;if(resume){v.play().catch(()=>setUI(false))}$('tip').style.display='none';pl.classList.remove('seeking')}
+bar.addEventListener('pointerdown',e=>{if(!v.duration)return;drag=true;resume=!v.paused;if(resume)v.pause();pl.classList.add('seeking');try{bar.setPointerCapture(e.pointerId)}catch(_){}
  dx=xr(e);vis(dx);e.preventDefault()});
 bar.addEventListener('pointermove',e=>{const x=xr(e);
  if(drag){dx=x;vis(x);const n=performance.now();
