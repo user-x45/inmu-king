@@ -29,7 +29,7 @@
 body{margin:0;background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
 .wrap{max-width:900px;margin:0 auto;padding:20px 16px 40px}
 .logo{font-weight:900;letter-spacing:.15em;font-size:13px;color:var(--mut);margin-bottom:18px}
-.logo b{color:var(--acc)}
+.logo .dot{width:8px;height:8px;fill:var(--acc);vertical-align:middle;margin:0 4px}
 h1{font-size:clamp(40px,12vw,88px);line-height:.95;margin:0 0 6px;font-weight:900;letter-spacing:-.02em;text-transform:uppercase}
 h1 span{color:var(--acc)}
 .artist{color:var(--mut);margin:0 0 20px;font-size:15px;letter-spacing:.08em}
@@ -48,13 +48,13 @@ h1 span{color:var(--acc)}
 .info dt{font-size:11px;letter-spacing:.12em;color:var(--mut);margin-bottom:3px}
 .info dd{margin:0;font-weight:700}
 .about{margin-top:22px;color:var(--mut);font-size:13px;line-height:1.8}
-.about ul{padding-left:1.2em;margin:8px 0}.about li{margin:4px 0}.about a{color:var(--acc)}.about .src{font-size:11px}
+.about ul{padding-left:1.2em;margin:8px 0}.about li{margin:4px 0}.about a{color:var(--acc)}.about .orig{margin:12px 0}.about .orig a{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--acc);border-radius:999px;padding:9px 18px;font-weight:700;font-size:14px;text-decoration:none}.about .orig svg{width:20px;height:20px;fill:currentColor}.about .src{font-size:11px}
 .about h2{font-size:15px;color:var(--fg);margin:0 0 6px}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header class="logo">YAJU-MC <b>●</b> MV</header>
+<header class="logo">YAJU-MC <svg class="dot" viewBox="0 0 8 8" aria-hidden="true"><circle cx="4" cy="4" r="4"/></svg> MV</header>
 <main>
 <h1>INMU <span>KING</span></h1>
 <p class="artist">YAJU-MC</p>
@@ -76,6 +76,7 @@ h1 span{color:var(--acc)}
 <li>ニコニコ動画の「INMU KING / YAJU-MC | THE INMU TAKE【最速歌ってみた】」は、週刊ニコニコ歌ってみたランキング #922（8月第5週）で2位になりました。</li>
 <li>2026年10月27日には、脳科学者の茂木健一郎氏がXで「よくできている」と評価し、紅白歌合戦への登場に期待を寄せたと報じられています（J-CAST ニュース）。</li>
 </ul>
+<p class="orig"><a href="https://www.nicovideo.jp/watch/sm46647529" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>本家（ニコニコ動画）で見る</a></p>
 <p class="src">参考：<a href="https://ja.chordwiki.org/wiki/INMU+KING" target="_blank" rel="noopener">ChordWiki</a>／<a href="https://www.weekly-utaran.net/archives/weekly-utaran-922.html" target="_blank" rel="noopener">週刊ニコニコ歌ってみたランキング #922</a>／<a href="https://www.j-cast.com/2026/10/28518767.html" target="_blank" rel="noopener">J-CAST ニュース</a></p>
 </section>
 </main>
