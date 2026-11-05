@@ -123,19 +123,28 @@ button svg{width:26px;height:26px}
 <footer>© YAJU-MC / INMU KING</footer>
 </div>
 <script>
-const $=id=>document.getElementById(id),v=$('v'),pl=$('pl');let drag=false;
+const $=id=>document.getElementById(id),v=$('v'),pl=$('pl');let drag=false,hold=false,resume=false;v.preload='auto';
 const fmt=t=>{if(!isFinite(t))return'0:00';const m=Math.floor(t/60),s=Math.floor(t%60);return m+':'+String(s).padStart(2,'0')};
 const P='M8 5v14l11-7z',U='M6 5h4v14H6zm8 0h4v14h-4z';
 function upd(){if(drag)return;const d=v.duration||0;$('prog').style.width=d?v.currentTime/d*100+'%':'0';$('time').textContent=fmt(v.currentTime)+' / '+fmt(d);
  if(v.buffered.length&&d)$('buf').style.width=v.buffered.end(v.buffered.length-1)/d*100+'%'}
-function toggle(){v.paused?v.play().catch(()=>{}):v.pause()}
-v.addEventListener('play',()=>{pl.classList.add('playing');$('ppi').setAttribute('d',U)});
-v.addEventListener('pause',()=>{pl.classList.remove('playing','idle');$('ppi').setAttribute('d',P)});
+function setUI(on){pl.classList.toggle('playing',on);if(!on)pl.classList.remove('idle');$('ppi').setAttribute('d',on?U:P)}
+function ahead(){const t=v.currentTime,b=v.buffered;for(let i=0;i<b.length;i++)if(b.start(i)<=t+.1&&b.end(i)>t)return b.end(i)-t;return 0}
+function ready(){const d=v.duration||0;return v.readyState>=3&&(ahead()>=3||v.currentTime+ahead()>=d-.3)}
+function check(){if(!hold||drag)return;if(ready()){hold=false;$('spin').style.display='none';v.play().catch(()=>{})}else $('spin').style.display='block'}
+['progress','canplay','canplaythrough','loadeddata','seeked','timeupdate'].forEach(e=>v.addEventListener(e,check));
+setInterval(check,300);
+function toggle(){
+ if(hold){hold=false;$('spin').style.display='none';setUI(false);return}
+ if(v.paused){if(ready())v.play().catch(()=>{});else{hold=true;setUI(true);check()}}
+ else v.pause()}
+v.addEventListener('play',()=>setUI(true));
+v.addEventListener('pause',()=>{if(!hold)setUI(false)});
 ['timeupdate','progress','loadedmetadata','durationchange'].forEach(e=>v.addEventListener(e,upd));
 v.addEventListener('waiting',()=>$('spin').style.display='block');
 v.addEventListener('seeking',()=>$('spin').style.display='block');
-v.addEventListener('seeked',()=>{if(v.readyState>=3)$('spin').style.display='none'});
-['playing','canplay','canplaythrough'].forEach(e=>v.addEventListener(e,()=>$('spin').style.display='none'));
+v.addEventListener('seeked',()=>{if(!hold&&v.readyState>=3)$('spin').style.display='none'});
+['playing','canplay','canplaythrough'].forEach(e=>v.addEventListener(e,()=>{if(!hold)$('spin').style.display='none'}));
 v.addEventListener('error',()=>{$('msg').style.display='flex';$('spin').style.display='none'});
 $('big').onclick=toggle;v.onclick=toggle;$('pp').onclick=toggle;
 v.ondblclick=()=>fs();
@@ -155,8 +164,8 @@ const bar=$('bar');let lastSeek=0,dx=0;
 function xr(e){const r=bar.getBoundingClientRect();return Math.min(Math.max((e.clientX-r.left)/r.width,0),1)}
 function vis(x){const d=v.duration||0;$('prog').style.width=x*100+'%';$('time').textContent=fmt(x*d)+' / '+fmt(d);
  $('tip').style.display='block';$('tip').style.left=x*100+'%';$('tip').textContent=fmt(x*d)}
-function endDrag(){if(!drag)return;drag=false;if(v.duration)v.currentTime=dx*v.duration;$('tip').style.display='none';pl.classList.remove('seeking')}
-bar.addEventListener('pointerdown',e=>{if(!v.duration)return;drag=true;pl.classList.add('seeking');try{bar.setPointerCapture(e.pointerId)}catch(_){}
+function endDrag(){if(!drag)return;drag=false;if(v.duration)v.currentTime=dx*v.duration;if(resume){hold=true;setUI(true);check()}$('tip').style.display='none';pl.classList.remove('seeking')}
+bar.addEventListener('pointerdown',e=>{if(!v.duration)return;drag=true;resume=!v.paused||hold;if(!v.paused){hold=true;v.pause()}pl.classList.add('seeking');try{bar.setPointerCapture(e.pointerId)}catch(_){}
  dx=xr(e);vis(dx);e.preventDefault()});
 bar.addEventListener('pointermove',e=>{const x=xr(e);
  if(drag){dx=x;vis(x);const n=performance.now();
