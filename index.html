@@ -44,8 +44,6 @@ h1 span{color:var(--acc)}
 #c .shaka-settings-menu button[aria-selected="true"] span,#c .shaka-overflow-menu .shaka-current-selection-span{color:var(--acc)}
 #c .shaka-range-element{accent-color:var(--acc)}
 #c .shaka-seek-bar-container:hover,#c .shaka-volume-bar-container:hover{--shaka-accent:var(--acc)}
-#lp{margin-top:12px;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:10px 18px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;touch-action:manipulation}
-#lp[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
 .info{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
 .info dt{font-size:11px;letter-spacing:.12em;color:var(--mut);margin-bottom:3px}
 .info dd{margin:0;font-weight:700}
@@ -63,7 +61,6 @@ h1 span{color:var(--acc)}
 <div id="c" data-shaka-player-container>
   <video data-shaka-player id="v" playsinline></video>
 </div>
-<button id="lp" aria-pressed="false">ループ再生: OFF</button>
 
 <dl class="info">
   <div><dt>TITLE</dt><dd>INMU KING</dd></div>
@@ -79,14 +76,28 @@ h1 span{color:var(--acc)}
 </div>
 <script>
 document.addEventListener('shaka-ui-loaded',()=>{
+  class LoopButton extends shaka.ui.Element{
+    constructor(parent,controls){
+      super(parent,controls);
+      const v=controls.getVideo();
+      this.b=document.createElement('button');
+      const ic=document.createElement('span');ic.className='material-icons-round';ic.textContent='repeat';
+      const lb=document.createElement('div');lb.className='shaka-overflow-button-label';
+      const nm=document.createElement('span');nm.textContent='ループ再生';
+      this.st=document.createElement('span');this.st.className='shaka-current-selection-span';this.st.textContent='OFF';
+      lb.append(nm,this.st);this.b.append(ic,lb);parent.appendChild(this.b);
+      this.eventManager.listen(this.b,'click',()=>{v.loop=!v.loop;this.st.textContent=v.loop?'ON':'OFF';ic.style.color=v.loop?'var(--acc)':''});
+    }
+  }
+  shaka.ui.OverflowMenu.registerElement('loop',{create:(r,c)=>new LoopButton(r,c)});
   const ui=document.getElementById('v').ui;
+  ui.configure({overflowMenuButtons:['loop','playback_rate','quality','captions','language','picture_in_picture','cast']});
   const a=getComputedStyle(document.documentElement).getPropertyValue('--acc').trim();
   ui.configure({seekBarColors:{base:'rgba(255,255,255,.25)',buffered:'rgba(255,255,255,.4)',played:a},volumeBarColors:{base:'rgba(255,255,255,.25)',level:a}});
   const p=ui.getControls().getPlayer();
   p.addEventListener('error',e=>console.error(e.detail));
   p.load('https://files.catbox.moe/sbpso8.mp4',null,'video/mp4').catch(e=>console.error(e));
 });
-document.getElementById('lp').onclick=function(){const v=document.getElementById('v');v.loop=!v.loop;this.setAttribute('aria-pressed',v.loop);this.textContent='ループ再生: '+(v.loop?'ON':'OFF')};
 document.addEventListener('shaka-ui-load-failed',e=>console.error(e));
 </script>
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.7.11/dist/shaka-player.ui.js"></script>
