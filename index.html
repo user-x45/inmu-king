@@ -31,7 +31,7 @@ footer{margin-top:28px;color:var(--mut);font-size:11px;text-align:center}
 <p class="artist">YAJU-MC</p>
 
 <div id="c" data-shaka-player-container>
-  <video data-shaka-player id="v" playsinline src="https://files.catbox.moe/sbpso8.mp4"></video>
+  <video data-shaka-player id="v" playsinline></video>
 </div>
 
 <dl class="info">
@@ -41,6 +41,14 @@ footer{margin-top:28px;color:var(--mut);font-size:11px;text-align:center}
 </dl>
 <footer>© YAJU-MC / INMU KING</footer>
 </div>
+<script>
+document.addEventListener('shaka-ui-loaded',()=>{
+  const p=document.getElementById('v').ui.getControls().getPlayer();
+  p.addEventListener('error',e=>console.error(e.detail));
+  p.load('https://files.catbox.moe/sbpso8.mp4',null,'video/mp4').catch(e=>console.error(e));
+});
+document.addEventListener('shaka-ui-load-failed',e=>console.error(e));
+</script>
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.7.11/dist/shaka-player.ui.js"></script>
 </body>
 </html>
