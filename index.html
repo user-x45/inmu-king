@@ -33,7 +33,8 @@
 @media (prefers-color-scheme:dark){:root{--bg:#0b0a09;--fg:#f3eee6;--mut:#9a9184;--acc:#ff3b3b;--card:#16130f;--line:#2b2620}}
 *{box-sizing:border-box}
 .stage{position:relative;isolation:isolate}
-#bg{position:absolute;left:-12%;top:-12%;width:124%;height:124%;z-index:-1;pointer-events:none;filter:blur(min(48px,8vw)) saturate(1.7);opacity:.85;transition:opacity .4s}
+#bg{position:absolute;left:-40%;top:-45%;width:180%;height:190%;z-index:-1;pointer-events:none;filter:blur(min(70px,11vw)) saturate(1.8) brightness(1.1);opacity:.95;-webkit-mask-image:radial-gradient(ellipse closest-side,#000 40%,transparent 100%);mask-image:radial-gradient(ellipse closest-side,#000 40%,transparent 100%)}
+.logo,h1,.artist,.info,.about{position:relative;z-index:1}
 .wrap{position:relative}
 body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
 .wrap{max-width:900px;margin:0 auto;padding:20px 16px 40px}
@@ -118,7 +119,7 @@ document.addEventListener('shaka-ui-loaded',()=>{
   p.addEventListener('error',e=>console.error(e.detail));
   const v=document.getElementById('v');
   const cv=document.getElementById('bg'),g=cv.getContext('2d');
-  cv.width=64;cv.height=36;
+  cv.width=96;cv.height=54;
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   let run=false;
   const paint=()=>{if(v.readyState>=2)g.drawImage(v,0,0,cv.width,cv.height)};
