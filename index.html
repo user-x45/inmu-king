@@ -32,6 +32,8 @@
 :root{--bg:#f4f1ec;--fg:#16120d;--mut:#6b6358;--acc:#d6232a;--card:#fff;--line:#ddd6ca}
 @media (prefers-color-scheme:dark){:root{--bg:#0b0a09;--fg:#f3eee6;--mut:#9a9184;--acc:#ff3b3b;--card:#16130f;--line:#2b2620}}
 *{box-sizing:border-box}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;filter:blur(24px)}
+.wrap{position:relative}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
 .wrap{max-width:900px;margin:0 auto;padding:20px 16px 40px}
 .logo{font-weight:900;letter-spacing:.15em;font-size:13px;color:var(--mut);margin-bottom:18px}
@@ -59,6 +61,7 @@ h1 span{color:var(--acc)}
 </style>
 </head>
 <body>
+<canvas id="bg" aria-hidden="true"></canvas>
 <div class="wrap">
 <header class="logo">YAJU-MC <svg class="dot" viewBox="0 0 8 8" aria-hidden="true"><circle cx="4" cy="4" r="4"/></svg> MV</header>
 <main>
@@ -110,7 +113,58 @@ document.addEventListener('shaka-ui-loaded',()=>{
   ui.configure({seekBarColors:{base:'rgba(255,255,255,.25)',buffered:'rgba(255,255,255,.4)',played:a},volumeBarColors:{base:'rgba(255,255,255,.25)',level:a}});
   const p=ui.getControls().getPlayer();
   p.addEventListener('error',e=>console.error(e.detail));
-  p.load('https://files.catbox.moe/sbpso8.mp4',null,'video/mp4').catch(e=>console.error(e));
+  const v=document.getElementById('v');
+  const cv=document.getElementById('bg'),g=cv.getContext('2d');
+  cv.width=192;cv.height=108;
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let ac,an,data,live=false,raf=0,lv=0;
+  const dark=()=>matchMedia('(prefers-color-scheme:dark)').matches;
+  const avg=(a,b)=>{let t=0;for(let i=a;i<b;i++)t+=data[i];return t/(b-a)/255};
+  const draw=t=>{
+    g.clearRect(0,0,cv.width,cv.height);
+    let bass=0,mid=0,high=0;
+    if(live&&an&&!v.paused){an.getByteFrequencyData(data);bass=avg(1,6);mid=avg(6,40);high=avg(40,100)}
+    const e=(bass+mid+high)/3;
+    lv+=(e-lv)*.15;
+    const s=t/1000,w=cv.width,h=cv.height;
+    const hue=(s*12+mid*140+high*80)%360;
+    const al=(dark()?.5:.35)*Math.min(1,lv*2.4);
+    const blobs=[[.25+Math.sin(s*.7)*.15,.3+Math.cos(s*.5)*.15,bass,0],[.75+Math.cos(s*.6)*.15,.4+Math.sin(s*.8)*.15,mid,70],[.5+Math.sin(s*.4)*.2,.8+Math.cos(s*.9)*.1,high,140]];
+    for(const [x,y,k,off] of blobs){
+      const r=Math.max(w,h)*(.25+k*.6);
+      const gr=g.createRadialGradient(x*w,y*h,0,x*w,y*h,r);
+      gr.addColorStop(0,'hsla('+((hue+off)%360)+',90%,'+(dark()?55:60)+'%,'+al+')');
+      gr.addColorStop(1,'hsla('+((hue+off)%360)+',90%,55%,0)');
+      g.fillStyle=gr;g.fillRect(0,0,w,h);
+    }
+    if(v.paused&&lv<.002){g.clearRect(0,0,w,h);raf=0;return}
+    raf=requestAnimationFrame(draw);
+  };
+  const start=()=>{
+    if(reduce||!live)return;
+    if(ac&&ac.state==='suspended')ac.resume();
+    if(!raf)raf=requestAnimationFrame(draw);
+  };
+  const setup=()=>{
+    if(ac)return;
+    try{
+      ac=new (window.AudioContext||window.webkitAudioContext)();
+      const src=ac.createMediaElementSource(v);
+      an=ac.createAnalyser();an.fftSize=256;an.smoothingTimeConstant=.8;
+      data=new Uint8Array(an.frequencyBinCount);
+      src.connect(an);an.connect(ac.destination);
+    }catch(e){console.error(e);live=false}
+  };
+  v.addEventListener('play',()=>{if(live){setup();start()}});
+  const url='https://files.catbox.moe/sbpso8.mp4';
+  v.crossOrigin='anonymous';
+  live=true;
+  p.load(url,null,'video/mp4').catch(e=>{
+    console.error(e);
+    live=false;
+    v.removeAttribute('crossorigin');
+    return p.load(url,null,'video/mp4');
+  }).catch(e=>console.error(e));
 });
 document.addEventListener('shaka-ui-load-failed',e=>console.error(e));
 </script>
