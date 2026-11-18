@@ -73,6 +73,9 @@ h1 span{color:var(--acc)}
 .about{margin-top:22px;color:var(--mut);font-size:13px;line-height:1.8}
 .about ul{padding-left:1.2em;margin:8px 0}.about li{margin:4px 0}.about a{color:var(--acc)}.about .orig{margin:12px 0}.about .orig a{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--acc);border-radius:999px;padding:9px 18px;font-weight:700;font-size:14px;text-decoration:none}.about .orig svg{width:20px;height:20px;fill:currentColor}.about .src{font-size:11px}
 .about h2{font-size:15px;color:var(--fg);margin:0 0 6px}
+.ver{display:inline-flex;gap:4px;padding:4px;margin:0 0 14px;background:var(--card);border:1px solid var(--line);border-radius:999px}
+.ver button{font:inherit;font-size:13px;font-weight:700;color:var(--mut);background:none;border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
+.ver button.on{background:var(--acc);color:#fff}
 </style>
 </head>
 <body>
@@ -81,6 +84,8 @@ h1 span{color:var(--acc)}
 <main>
 <h1>INMU <span>KING</span></h1>
 <p class="artist">YAJU-MC</p>
+
+<div class="ver" role="group" aria-label="バージョン切り替え"><button type="button" data-k="orig" class="on" aria-pressed="true">オリジナル版</button><button type="button" data-k="rev" aria-pressed="false">修正版</button></div>
 
 <div class="stage">
 <canvas id="bg" aria-hidden="true"></canvas>
@@ -99,11 +104,24 @@ h1 span{color:var(--acc)}
 <p>「INMU KING」は、YAJU-MCが歌うネットミーム系の楽曲です。作詞・作曲・編曲はやじゅまんで、歌詞は「田所浩二」をたたえる内容になっています。AIを使ったミーム曲として、ネットを中心に広まりました。</p>
 <ul>
 <li>コード譜サイトのChordWikiでは、BPM133・4/4拍子・Fm（ヘ短調）の曲として紹介されています。</li>
-<li>ニコニコ動画の「INMU KING / YAJU-MC | THE INMU TAKE【最速歌ってみた】」は、週刊ニコニコ歌ってみたランキング #922（8月第5週）で2位になりました。</li>
-<li>2026年10月27日には、脳科学者の茂木健一郎氏がXで「よくできている」と評価し、紅白歌合戦への登場に期待を寄せたと報じられています（J-CAST ニュース）。</li>
+</ul>
+<h2>これまでの経緯（時系列）</h2>
+<ul>
+<li><b>2026年8月10日</b>　やじゅまん氏がニコニコ動画とYouTubeで公開。生成AIを使って制作された曲とMVです。</li>
+<li><b>8月下旬</b>　ニコニコ動画の「INMU KING / YAJU-MC | THE INMU TAKE【最速歌ってみた】」が、週刊ニコニコ歌ってみたランキング #922（8月第5週）で2位になりました。</li>
+<li><b>9月11〜17日の集計週</b>　オリコンの週間YouTubeチャートに初登場し、約135万回の視聴で20位でした。M!LKやSnow Manと同じ表に載ったことが話題になりました。</li>
+<li><b>9月18〜24日の集計週</b>　20位から7位に上昇しました（約331万回）。</li>
+<li><b>9月25日〜10月1日の集計週</b>　386.6万回の視聴で2位に上昇し、初登場から3週連続で自己最高位を更新しました。結果は10月7日に発表されました。</li>
+<li><b>10月2〜8日の集計週</b>　2位を維持し、視聴回数は480万回台に伸びました。</li>
+<li><b>10月9〜15日の週</b>　週間視聴回数は540万8165回で、報じられた中では最多でした。</li>
+<li><b>10月18日ごろ</b>　YouTube版が2600万回再生を超えました（COKI）。10月20日には2700万回を突破したとも伝えられています。</li>
+<li><b>10月22日</b>　やじゅまん氏が、YouTube版MVが削除され、ニコニコ動画版もデバイス規制の対象になったと報告しました。YouTubeが示した理由は、ヌードや性的コンテンツに関するポリシー違反だったと報じられています（COKI）。同氏は、著作権の申し立てではなく性的コンテンツとしての報告が原因とみて、異議申し立てを行う考えを示したと伝えられています（4Gamer）。ランキングをまとめた記事によると、削除が報じられた10月16〜22日の集計以降、オリコンのチャートでは30位圏外になりました。</li>
+<li><b>10月27日</b>　脳科学者の茂木健一郎氏がXで「よくできている」と評価し、紅白歌合戦への登場に期待を寄せたと報じられました（J-CAST ニュース）。</li>
+<li><b>11月8日</b>　問題があるとされた性的な表現を取り除き、問題のある歌詞を音声上で伏せ字（検閲）処理した「修正版」が、YouTubeでプレミア公開されました。翻訳歌詞は字幕で見られます。</li>
 </ul>
 <p class="orig"><a href="https://www.nicovideo.jp/watch/sm46647529" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>本家（ニコニコ動画）で見る</a></p>
-<p class="src">参考：<a href="https://ja.chordwiki.org/wiki/INMU+KING" target="_blank" rel="noopener">ChordWiki</a>／<a href="https://www.weekly-utaran.net/archives/weekly-utaran-922.html" target="_blank" rel="noopener">週刊ニコニコ歌ってみたランキング #922</a>／<a href="https://www.j-cast.com/2026/10/28518767.html" target="_blank" rel="noopener">J-CAST ニュース</a></p>
+<p class="orig"><a href="https://www.youtube.com/watch?v=RkcI7ase0H0" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>YouTubeで修正版を見る</a></p>
+<p class="src">参考：<a href="https://ja.chordwiki.org/wiki/INMU+KING" target="_blank" rel="noopener">ChordWiki</a>／<a href="https://www.weekly-utaran.net/archives/weekly-utaran-922.html" target="_blank" rel="noopener">週刊ニコニコ歌ってみたランキング #922</a>／<a href="https://www.j-cast.com/2026/10/28518767.html" target="_blank" rel="noopener">J-CAST ニュース</a>／<a href="https://www.inatei.com/entry/inmu-king-youtube-ranking" target="_blank" rel="noopener">本家いなてい</a>／<a href="https://coki.jp/article/column/96148/" target="_blank" rel="noopener">COKI</a>／<a href="https://www.4gamers.com.tw/news/detail/82805/inmu-king-be-shutted-down-by-youtube" target="_blank" rel="noopener">4Gamer</a></p>
 </section>
 </main>
 <noscript><p>動画の再生にはJavaScriptを有効にしてください。<a href="https://files.catbox.moe/sbpso8.mp4">MP4を直接開く</a></p></noscript>
@@ -147,7 +165,21 @@ document.addEventListener('shaka-ui-loaded',()=>{
   v.addEventListener('ended',()=>{run=false});
   v.addEventListener('seeked',paint);
   v.addEventListener('loadeddata',paint);
-  p.load('https://files.catbox.moe/sbpso8.mp4',null,'video/mp4').catch(e=>console.error(e));
+  const sources={orig:'https://files.catbox.moe/sbpso8.mp4',rev:'https://files.catbox.moe/2ytpxd.mp4'};
+  const btns=document.querySelectorAll('.ver button');
+  let cur='orig';
+  const switchTo=async k=>{
+    if(k===cur)return;
+    const t=v.currentTime,playing=!v.paused;
+    cur=k;
+    btns.forEach(b=>{const on=b.dataset.k===k;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+    try{
+      await p.load(sources[k],t,'video/mp4');
+      if(playing)v.play().catch(()=>{});
+    }catch(e){console.error(e)}
+  };
+  btns.forEach(b=>b.addEventListener('click',()=>switchTo(b.dataset.k)));
+  p.load(sources.orig,null,'video/mp4').catch(e=>console.error(e));
 });
 document.addEventListener('shaka-ui-load-failed',e=>console.error(e));
 </script>
