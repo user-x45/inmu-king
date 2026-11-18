@@ -73,6 +73,24 @@ h1 span{color:var(--acc)}
 .ver{display:inline-flex;gap:4px;padding:4px;margin:0 0 14px;background:var(--card);border:1px solid var(--line);border-radius:999px}
 .ver button{font:inherit;font-size:13px;font-weight:700;color:var(--mut);background:none;border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
 .ver button.on{background:var(--acc);color:#fff}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px}
+.tools .ver{margin:0}
+.dlbtn{font:inherit;font-size:13px;font-weight:700;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:11px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.dlbtn svg{width:16px;height:16px;fill:currentColor}
+dialog#dl{border:1px solid var(--line);border-radius:16px;padding:0;background:var(--card);color:var(--fg);width:min(520px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
+dialog#dl::backdrop{background:rgba(0,0,0,.6)}
+.dlb{padding:20px;overflow-y:auto;max-height:calc(100dvh - 34px)}
+.dlb h3{margin:0 0 6px;font-size:17px}
+.dlb h4{margin:16px 0 4px;font-size:13px;color:var(--mut)}
+.dlb p,.dlb li{font-size:14px;line-height:1.7}
+.dlb p{margin:6px 0}
+.dlb ul{margin:4px 0;padding-left:20px}
+.dlb .chk{display:flex;gap:10px;align-items:flex-start;margin:18px 0 14px;font-size:14px;line-height:1.5;cursor:pointer}
+.dlb .chk input{margin-top:3px;width:18px;height:18px;flex:none}
+.dlb .acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.dlb .acts button{font:inherit;font-size:14px;font-weight:700;border-radius:999px;padding:11px 18px;cursor:pointer;border:1px solid var(--line);background:none;color:var(--fg)}
+.dlb .acts button.go{background:var(--acc);border-color:var(--acc);color:#fff}
+.dlb .acts button:disabled{opacity:.4;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -82,7 +100,10 @@ h1 span{color:var(--acc)}
 <h1>INMU <span>KING</span></h1>
 <p class="artist">YAJU-MC</p>
 
+<div class="tools">
 <div class="ver" role="group" aria-label="バージョン切り替え"><button type="button" data-k="orig" class="on" aria-pressed="true">オリジナル版</button><button type="button" data-k="rev" aria-pressed="false">修正版</button></div>
+<button type="button" class="dlbtn" id="dlopen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v9.2l3.6-3.6L18 10l-6 6-6-6 1.4-1.4 3.6 3.6zM5 19h14v2H5z"/></svg>ダウンロード</button>
+</div>
 
 <div class="stage">
 <div id="c" data-shaka-player-container>
@@ -119,6 +140,34 @@ h1 span{color:var(--acc)}
 <p class="orig"><a href="https://www.youtube.com/watch?v=RkcI7ase0H0" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>YouTubeで修正版を見る</a></p>
 <p class="src">参考：<a href="https://ja.chordwiki.org/wiki/INMU+KING" target="_blank" rel="noopener">ChordWiki</a>／<a href="https://www.weekly-utaran.net/archives/weekly-utaran-922.html" target="_blank" rel="noopener">週刊ニコニコ歌ってみたランキング #922</a>／<a href="https://www.j-cast.com/2026/10/28518767.html" target="_blank" rel="noopener">J-CAST ニュース</a>／<a href="https://www.inatei.com/entry/inmu-king-youtube-ranking" target="_blank" rel="noopener">本家いなてい</a>／<a href="https://coki.jp/article/column/96148/" target="_blank" rel="noopener">COKI</a>／<a href="https://www.4gamers.com.tw/news/detail/82805/inmu-king-be-shutted-down-by-youtube" target="_blank" rel="noopener">4Gamer</a></p>
 </section>
+<dialog id="dl" aria-labelledby="dl-t">
+<div class="dlb">
+<h3 id="dl-t">ダウンロード前にご確認ください</h3>
+<p>保存するのは「<span id="dl-v">オリジナル版</span>」の動画です。この曲は淫夢ミームに由来する作品です。ミームの性質を理解したうえで、使う場所や見せる相手、二次利用や収益化をするかどうかを、ご自身で判断してください。</p>
+<h4>収益を得ない使い方</h4>
+<ul>
+<li>転載、切り抜き、ループや速度変更などの加工、MADやリミックス、歌ってみた、踊ってみた、各種ページへの組み込みなどは、以下の禁止事項に当たらない限り、事前の連絡なしで行えます。</li>
+<li>無料で再配布する場合も、料金、会員登録、購入、投げ銭などの条件は付けられません。</li>
+</ul>
+<h4>収益を得る使い方</h4>
+<ul>
+<li>歌ってみた、カバー、リミックス、曲そのものを聴かせる投稿などは、広告や報酬などの収益を得られません。</li>
+<li>DJプレイの一曲としての再生や、短い動画での独自表現を中心にした一部使用など、ごく限られた使い方だけが連絡なしで認められています。</li>
+</ul>
+<h4>収益化の有無にかかわらず禁止されていること</h4>
+<ul>
+<li>音楽配信サービスへの登録や、音源の販売、有料配布、会員や購入の特典にすること</li>
+<li>企業や商品の広告、宣伝、スポンサー案件への使用</li>
+<li>Content IDなどの権利管理サービスへの登録、権利者や公式アーティストを装った表示</li>
+<li>素材に独自の利用制限や追加条件を付けること</li>
+</ul>
+<p>無断で登録された場合は、制作側がプラットフォームや配信事業者に取り下げを申請します。</p>
+<h4>映像について</h4>
+<p>公式MVの映像には第三者が権利を持つ素材が含まれることがあります。この方針は、映像素材を自由に使えることを意味しません。法令で許諾なしに認められている利用は、この方針によって制限されません。</p>
+<label class="chk"><input type="checkbox" id="dlok"><span>上記を読み、利用条件を理解したうえで、守ることに同意します。</span></label>
+<div class="acts"><button type="button" id="dlcancel">キャンセル</button><button type="button" class="go" id="dlgo" disabled>ダウンロードする</button></div>
+</div>
+</dialog>
 </main>
 <noscript><p>動画の再生にはJavaScriptを有効にしてください。<a href="https://files.catbox.moe/sbpso8.mp4">MP4を直接開く</a></p></noscript>
 </div>
@@ -159,6 +208,33 @@ document.addEventListener('shaka-ui-loaded',()=>{
     }catch(e){console.error(e)}
   };
   btns.forEach(b=>b.addEventListener('click',()=>switchTo(b.dataset.k)));
+  const dlg=document.getElementById('dl'),ok=document.getElementById('dlok'),go=document.getElementById('dlgo');
+  const names={orig:['オリジナル版','INMU_KING_original.mp4'],rev:['修正版','INMU_KING_revised.mp4']};
+  document.getElementById('dlopen').addEventListener('click',()=>{
+    document.getElementById('dl-v').textContent=names[cur][0];
+    ok.checked=false;go.disabled=true;
+    dlg.showModal();
+  });
+  ok.addEventListener('change',()=>{go.disabled=!ok.checked});
+  document.getElementById('dlcancel').addEventListener('click',()=>dlg.close());
+  dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+  go.addEventListener('click',async()=>{
+    const url=sources[cur],name=names[cur][1];
+    go.disabled=true;go.textContent='取得中…';
+    try{
+      const r=await fetch(url);
+      if(!r.ok)throw new Error(r.status);
+      const u=URL.createObjectURL(await r.blob());
+      const a=document.createElement('a');
+      a.href=u;a.download=name;
+      document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(u),10000);
+    }catch(e){
+      window.open(url,'_blank','noopener');
+    }
+    go.textContent='ダウンロードする';
+    dlg.close();
+  });
   p.load(sources.orig,null,'video/mp4').catch(e=>console.error(e));
 });
 document.addEventListener('shaka-ui-load-failed',e=>console.error(e));
