@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+<!--
+⬜⬜⬜🏿🏿🏿🏻🏻🏻🏻
+⬜⬜🏿🏿🏾🏾🏿🏻🏻🏻
+⬜⬜🏿🏼🏽🏽🏼🏻🏻🏻
+⬜⬜🏾🏽🏽🏽🏽🏻🏻🏻
+⬜⬜🏾🏼🏽🏽🏼🏻🏻🏻
+⬜⬜⬜🏾🏼🏼🏼🏻🏻🏻
+⬜⬜⬜🏽🏾🏾🏻🏻🏻🏻
+⬜⬜⬜🏼🏼🏽🏻🏻🏻🏻
+⬜🏿🏿🏿🏿🏼🏿🏿🏻🏻
+🏿🏿🏿🏿🏿🏿🏿🏿🏿🏿
+-->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -32,11 +44,12 @@
 :root{--bg:#f4f1ec;--fg:#16120d;--mut:#6b6358;--acc:#d6232a;--card:#fff;--line:#ddd6ca}
 @media (prefers-color-scheme:dark){:root{--bg:#0b0a09;--fg:#f3eee6;--mut:#9a9184;--acc:#ff3b3b;--card:#16130f;--line:#2b2620}}
 *{box-sizing:border-box}
+html{overflow-x:hidden;overflow-x:clip;max-width:100%}
 .stage{position:relative;isolation:isolate}
 #bg{position:absolute;left:-40%;top:-45%;width:180%;height:190%;z-index:-1;pointer-events:none;filter:blur(min(70px,11vw)) saturate(1.8) brightness(1.1);opacity:.95;-webkit-mask-image:radial-gradient(ellipse closest-side,#000 40%,transparent 100%);mask-image:radial-gradient(ellipse closest-side,#000 40%,transparent 100%)}
 .logo,h1,.artist,.info,.about{position:relative;z-index:1}
-.wrap{position:relative}
-body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.wrap{position:relative;overflow-x:clip}
+body{margin:0;overflow-x:hidden;overflow-x:clip;max-width:100%;background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Arial,"Hiragino Sans","Noto Sans JP",sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
 .wrap{max-width:900px;margin:0 auto;padding:20px 16px 40px}
 .logo{font-weight:900;letter-spacing:.15em;font-size:13px;color:var(--mut);margin-bottom:18px}
 .logo .dot{width:8px;height:8px;fill:var(--acc);vertical-align:middle;margin:0 4px}
