@@ -39,7 +39,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebPage","url":"https://inmu-king.pages.dev/","name":"INMU KING / YAJU-MC ミュージックビデオ","description":"YAJU-MCの楽曲「INMU KING」のミュージックビデオ。","thumbnailUrl":"https://inmu-king.pages.dev/ogp.jpg","inLanguage":"ja","creator":{"@type":"Person","name":"YAJU-MC"}}
 </script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@5.3.6/dist/controls.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.8.5/dist/plyr.css">
 <style>
 :root{--bg:#f4f1ec;--fg:#16120d;--mut:#6b6358;--acc:#d6232a;--card:#fff;--line:#ddd6ca}
 @media (prefers-color-scheme:dark){:root{--bg:#0b0a09;--fg:#f3eee6;--mut:#9a9184;--acc:#ff3b3b;--card:#16130f;--line:#2b2620}}
@@ -53,15 +53,7 @@ body{margin:0;overflow-x:hidden;overflow-x:clip;max-width:100%;background:var(--
 h1{font-size:clamp(40px,12vw,88px);line-height:.95;margin:0 0 6px;font-weight:900;letter-spacing:-.02em;text-transform:uppercase}
 h1 span{color:var(--acc)}
 .artist{color:var(--mut);margin:0 0 20px;font-size:15px;letter-spacing:.08em}
-#c{width:100%;aspect-ratio:16/9;background:#000}
-#c video{width:100%;height:100%}
-#c .shaka-play-button{background-color:var(--acc)!important;color:#fff}
-#c .shaka-spinner{color:var(--acc)}
-#c .shaka-controls-button-panel button:hover,#c .shaka-controls-button-panel .shaka-current-time:hover{color:var(--acc)}
-#c .shaka-overflow-menu button:hover,#c .shaka-settings-menu button:hover{background:rgba(255,255,255,.1)}
-#c .shaka-settings-menu button[aria-selected="true"] span,#c .shaka-overflow-menu .shaka-current-selection-span{color:var(--acc)}
-#c .shaka-range-element{accent-color:var(--acc)}
-#c .shaka-seek-bar-container:hover,#c .shaka-volume-bar-container:hover{--shaka-accent:var(--acc)}
+.plyr{--plyr-color-main:var(--acc)}
 .info{margin-top:36px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
 .info dt{font-size:11px;letter-spacing:.12em;color:var(--mut);margin-bottom:3px}
 .info dd{margin:0;font-weight:700}
@@ -101,9 +93,7 @@ dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 </div>
 
 <div class="stage">
-<div id="c" data-shaka-player-container>
-  <video data-shaka-player id="v" playsinline></video>
-</div>
+<video id="v" playsinline controls><source src="https://files.catbox.moe/sbpso8.mp4" type="video/mp4"></video>
 </div>
 
 <dl class="info">
@@ -146,82 +136,75 @@ dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 </main>
 <noscript><p>動画の再生にはJavaScriptを有効にしてください。<a href="https://files.catbox.moe/sbpso8.mp4">MP4を直接開く</a></p></noscript>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/plyr@3.8.5/dist/plyr.min.js"></script>
 <script>
-document.addEventListener('shaka-ui-loaded',()=>{
-  const ui=document.getElementById('v').ui;
-    const a=getComputedStyle(document.documentElement).getPropertyValue('--acc').trim();
-  ui.configure({seekBarColors:{base:'rgba(255,255,255,.25)',buffered:'rgba(255,255,255,.4)',played:a},volumeBarColors:{base:'rgba(255,255,255,.25)',level:a}});
-  const p=ui.getControls().getPlayer();
-  p.addEventListener('error',e=>console.error(e.detail));
-  const v=document.getElementById('v');
-  const sources={orig:'https://files.catbox.moe/sbpso8.mp4',rev:'https://files.catbox.moe/2ytpxd.mp4'};
-  const btns=document.querySelectorAll('.ver button');
-  let cur='orig';
-  const switchTo=async k=>{
-    if(k===cur)return;
-    const t=v.currentTime,playing=!v.paused;
-    cur=k;
-    btns.forEach(b=>{const on=b.dataset.k===k;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
-    try{
-      await p.load(sources[k],t,'video/mp4');
-      if(playing)v.play().catch(()=>{});
-    }catch(e){console.error(e)}
-  };
-  btns.forEach(b=>b.addEventListener('click',()=>switchTo(b.dataset.k)));
-  const dlg=document.getElementById('dl'),pct=document.getElementById('dlpct');
-  const names={orig:['オリジナル版','INMU_KING_original.mp4'],rev:['修正版','INMU_KING_revised.mp4']};
-  const bar=document.getElementById('dlbar');
-  let ctrl=null;
-  const run=async()=>{
-    const url=sources[cur],name=names[cur][1];
-    document.getElementById('dl-v').textContent=names[cur][0];
-    ctrl=new AbortController();
-    bar.style.width='0%';bar.style.opacity='1';pct.textContent='0%';
-    dlg.showModal();
-    try{
-      const r=await fetch(url,{signal:ctrl.signal});
-      if(!r.ok)throw new Error(r.status);
-      const total=+r.headers.get('content-length')||0;
-      let blob;
-      if(r.body){
-        const rd=r.body.getReader(),chunks=[];
-        let got=0;
-        for(;;){
-          const {done,value}=await rd.read();
-          if(done)break;
-          chunks.push(value);got+=value.length;
-          if(total){
-            const n=Math.floor(got/total*100);
-            bar.style.width=n+'%';pct.textContent=n+'%';
-          }else{
-            bar.style.width='100%';bar.style.opacity='.45';
-            pct.textContent=(got/1048576).toFixed(1)+'MB';
-          }
+const v=document.getElementById('v');
+const player=new Plyr(v,{iconUrl:'https://cdn.jsdelivr.net/npm/plyr@3.8.5/dist/plyr.svg'});
+const sources={orig:'https://files.catbox.moe/sbpso8.mp4',rev:'https://files.catbox.moe/2ytpxd.mp4'};
+const btns=document.querySelectorAll('.ver button');
+let cur='orig';
+const switchTo=k=>{
+  if(k===cur)return;
+  const t=player.currentTime,playing=player.playing;
+  cur=k;
+  btns.forEach(b=>{const on=b.dataset.k===k;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  player.source={type:'video',sources:[{src:sources[k],type:'video/mp4'}]};
+  player.once('loadedmetadata',()=>{
+    player.currentTime=t;
+    if(playing)player.play();
+  });
+};
+btns.forEach(b=>b.addEventListener('click',()=>switchTo(b.dataset.k)));
+const dlg=document.getElementById('dl'),pct=document.getElementById('dlpct');
+const names={orig:['オリジナル版','INMU_KING_original.mp4'],rev:['修正版','INMU_KING_revised.mp4']};
+const bar=document.getElementById('dlbar');
+let ctrl=null;
+const run=async()=>{
+  const url=sources[cur],name=names[cur][1];
+  document.getElementById('dl-v').textContent=names[cur][0];
+  ctrl=new AbortController();
+  bar.style.width='0%';bar.style.opacity='1';pct.textContent='0%';
+  dlg.showModal();
+  try{
+    const r=await fetch(url,{signal:ctrl.signal});
+    if(!r.ok)throw new Error(r.status);
+    const total=+r.headers.get('content-length')||0;
+    let blob;
+    if(r.body){
+      const rd=r.body.getReader(),chunks=[];
+      let got=0;
+      for(;;){
+        const {done,value}=await rd.read();
+        if(done)break;
+        chunks.push(value);got+=value.length;
+        if(total){
+          const n=Math.floor(got/total*100);
+          bar.style.width=n+'%';pct.textContent=n+'%';
+        }else{
+          bar.style.width='100%';bar.style.opacity='.45';
+          pct.textContent=(got/1048576).toFixed(1)+'MB';
         }
-        blob=new Blob(chunks,{type:'video/mp4'});
-      }else{
-        blob=await r.blob();
       }
-      const u=URL.createObjectURL(blob);
-      const a=document.createElement('a');
-      a.href=u;a.download=name;
-      document.body.appendChild(a);a.click();a.remove();
-      setTimeout(()=>URL.revokeObjectURL(u),10000);
-    }catch(e){
-      if(e.name!=='AbortError')window.open(url,'_blank','noopener');
-    }finally{
-      ctrl=null;
-      if(dlg.open)dlg.close();
+      blob=new Blob(chunks,{type:'video/mp4'});
+    }else{
+      blob=await r.blob();
     }
-  };
-  document.getElementById('dlopen').addEventListener('click',run);
-  document.getElementById('dlcancel').addEventListener('click',()=>dlg.close());
-  dlg.addEventListener('cancel',()=>{if(ctrl)ctrl.abort()});
-  dlg.addEventListener('close',()=>{if(ctrl)ctrl.abort()});
-  p.load(sources.orig,null,'video/mp4').catch(e=>console.error(e));
-});
-document.addEventListener('shaka-ui-load-failed',e=>console.error(e));
+    const u=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=u;a.download=name;
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(u),10000);
+  }catch(e){
+    if(e.name!=='AbortError')window.open(url,'_blank','noopener');
+  }finally{
+    ctrl=null;
+    if(dlg.open)dlg.close();
+  }
+};
+document.getElementById('dlopen').addEventListener('click',run);
+document.getElementById('dlcancel').addEventListener('click',()=>dlg.close());
+dlg.addEventListener('cancel',()=>{if(ctrl)ctrl.abort()});
+dlg.addEventListener('close',()=>{if(ctrl)ctrl.abort()});
 </script>
-<script src="https://cdn.jsdelivr.net/npm/shaka-player@5.3.6/dist/shaka-player.ui.js"></script>
 </body>
 </html>
