@@ -102,7 +102,7 @@ dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 </div>
 
 <div class="stage">
-<video id="v" playsinline controls preload="auto"><source src="https://files.catbox.moe/sbpso8.mp4" type="video/mp4"></video>
+<video id="v" playsinline controls preload="auto"><source src="https://files.catbox.moe/sbpso8.mp4#t=0.001" type="video/mp4"></video>
 </div>
 
 <dl class="info">
@@ -172,16 +172,17 @@ const btns=document.querySelectorAll('.ver button');
 let cur='orig';
 const switchTo=k=>{
   if(k===cur)return;
-  const t=player.currentTime,playing=player.playing,lp=player.loop;
+  const t=v.currentTime,playing=!v.paused;
   cur=k;
   btns.forEach(b=>{const on=b.dataset.k===k;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
-  player.source={type:'video',sources:[{src:sources[k],type:'video/mp4'}]};
-  player.once('loadedmetadata',()=>{
-    player.currentTime=t;
-    player.loop=lp;
-    refreshLoop();
-    if(playing)player.play();
-  });
+  v.addEventListener('loadedmetadata',()=>{
+    v.currentTime=Math.max(t,0.001);
+  },{once:true});
+  v.addEventListener('canplay',()=>{
+    if(Math.abs(v.currentTime-t)>0.5)v.currentTime=t;
+    if(playing)v.play().catch(()=>{});
+  },{once:true});
+  v.src=sources[k];
 };
 btns.forEach(b=>b.addEventListener('click',()=>switchTo(b.dataset.k)));
 const dlg=document.getElementById('dl'),pct=document.getElementById('dlpct');
