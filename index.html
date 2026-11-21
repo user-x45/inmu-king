@@ -105,7 +105,7 @@ dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 
 <div class="stage">
 <div id="c" data-shaka-player-container>
-  <video data-shaka-player id="v" playsinline></video>
+  <video data-shaka-player id="v" playsinline preload="auto"></video>
 </div>
 </div>
 
@@ -224,7 +224,7 @@ document.addEventListener('shaka-ui-loaded',()=>{
   document.getElementById('dlcancel').addEventListener('click',()=>dlg.close());
   dlg.addEventListener('cancel',()=>{if(ctrl)ctrl.abort()});
   dlg.addEventListener('close',()=>{if(ctrl)ctrl.abort()});
-  p.load(sources.orig,0,'video/mp4').catch(e=>console.error(e));
+  p.load(sources.orig,0.01,'video/mp4').catch(e=>console.error(e));
 });
 document.addEventListener('shaka-ui-load-failed',e=>console.error(e));
 </script>
