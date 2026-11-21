@@ -53,13 +53,10 @@ body{margin:0;overflow-x:hidden;overflow-x:clip;max-width:100%;background:var(--
 h1{font-size:clamp(40px,12vw,88px);line-height:.95;margin:0 0 6px;font-weight:900;letter-spacing:-.02em;text-transform:uppercase}
 h1 span{color:var(--acc)}
 .artist{color:var(--mut);margin:0 0 20px;font-size:15px;letter-spacing:.08em}
-#c{width:100%;aspect-ratio:16/9;max-height:none;background:#000;border-radius:14px;overflow:hidden}
+#c{width:100%;aspect-ratio:16/9;background:#000}
 #c video{width:100%;height:100%}
-.shaka-overflow-menu,.shaka-settings-menu{max-height:calc(100% - 72px)!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain}
-.shaka-overflow-menu button,.shaka-settings-menu button{flex-shrink:0}
 #c .shaka-play-button{background-color:var(--acc)!important;color:#fff}
 #c .shaka-spinner{color:var(--acc)}
-#c:not(.busy) .shaka-spinner-container{display:none!important}
 #c .shaka-controls-button-panel button:hover,#c .shaka-controls-button-panel .shaka-current-time:hover{color:var(--acc)}
 #c .shaka-overflow-menu button:hover,#c .shaka-settings-menu button:hover{background:rgba(255,255,255,.1)}
 #c .shaka-settings-menu button[aria-selected="true"] span,#c .shaka-overflow-menu .shaka-current-selection-span{color:var(--acc)}
@@ -105,7 +102,7 @@ dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 
 <div class="stage">
 <div id="c" data-shaka-player-container>
-  <video data-shaka-player id="v" playsinline preload="auto"></video>
+  <video data-shaka-player id="v" playsinline></video>
 </div>
 </div>
 
@@ -152,14 +149,11 @@ dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 <script>
 document.addEventListener('shaka-ui-loaded',()=>{
   const ui=document.getElementById('v').ui;
-  ui.configure({bigButtons:['play_pause'],showBufferingSpinner:true,overflowMenuButtons:['loop','playback_rate','quality','captions-settings','language','picture_in_picture','cast']});
-  const a=getComputedStyle(document.documentElement).getPropertyValue('--acc').trim();
+    const a=getComputedStyle(document.documentElement).getPropertyValue('--acc').trim();
   ui.configure({seekBarColors:{base:'rgba(255,255,255,.25)',buffered:'rgba(255,255,255,.4)',played:a},volumeBarColors:{base:'rgba(255,255,255,.25)',level:a}});
   const p=ui.getControls().getPlayer();
   p.addEventListener('error',e=>console.error(e.detail));
-  const v=document.getElementById('v'),box=document.getElementById('c');
-  const sync=()=>box.classList.toggle('busy',!v.paused&&!v.ended&&v.readyState<3);
-  ['waiting','playing','canplay','canplaythrough','pause','play','seeking','seeked','loadstart','emptied','ended','stalled','loadeddata'].forEach(n=>v.addEventListener(n,sync));
+  const v=document.getElementById('v');
   const sources={orig:'https://files.catbox.moe/sbpso8.mp4',rev:'https://files.catbox.moe/2ytpxd.mp4'};
   const btns=document.querySelectorAll('.ver button');
   let cur='orig';
@@ -224,7 +218,7 @@ document.addEventListener('shaka-ui-loaded',()=>{
   document.getElementById('dlcancel').addEventListener('click',()=>dlg.close());
   dlg.addEventListener('cancel',()=>{if(ctrl)ctrl.abort()});
   dlg.addEventListener('close',()=>{if(ctrl)ctrl.abort()});
-  p.load(sources.orig,0.01,'video/mp4').catch(e=>console.error(e));
+  p.load(sources.orig,null,'video/mp4').catch(e=>console.error(e));
 });
 document.addEventListener('shaka-ui-load-failed',e=>console.error(e));
 </script>
