@@ -1,16 +1,4 @@
 <!DOCTYPE html>
-<!--
-⬜⬜⬜🏿🏿🏿🏻🏻🏻🏻
-⬜⬜🏿🏿🏾🏾🏿🏻🏻🏻
-⬜⬜🏿🏼🏽🏽🏼🏻🏻🏻
-⬜⬜🏾🏽🏽🏽🏽🏻🏻🏻
-⬜⬜🏾🏼🏽🏽🏼🏻🏻🏻
-⬜⬜⬜🏾🏼🏼🏼🏻🏻🏻
-⬜⬜⬜🏽🏾🏾🏻🏻🏻🏻
-⬜⬜⬜🏼🏼🏽🏻🏻🏻🏻
-⬜🏿🏿🏿🏿🏼🏿🏿🏻🏻
-🏿🏿🏿🏿🏿🏿🏿🏿🏿🏿
--->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -39,7 +27,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebPage","url":"https://inmu-king.pages.dev/","name":"INMU KING / YAJU-MC ミュージックビデオ","description":"YAJU-MCの楽曲「INMU KING」のミュージックビデオ。","thumbnailUrl":"https://inmu-king.pages.dev/ogp.jpg","inLanguage":"ja","creator":{"@type":"Person","name":"YAJU-MC"}}
 </script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.7.11/dist/controls.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@5.3.6/dist/controls.css">
 <style>
 :root{--bg:#f4f1ec;--fg:#16120d;--mut:#6b6358;--acc:#d6232a;--card:#fff;--line:#ddd6ca}
 @media (prefers-color-scheme:dark){:root{--bg:#0b0a09;--fg:#f3eee6;--mut:#9a9184;--acc:#ff3b3b;--card:#16130f;--line:#2b2620}}
@@ -80,19 +68,11 @@ h1 span{color:var(--acc)}
 dialog#dl{border:1px solid var(--line);border-radius:16px;padding:0;background:var(--card);color:var(--fg);width:min(520px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
 dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 .dlb{padding:20px;overflow-y:auto;max-height:calc(100dvh - 34px)}
-.dlb h3{margin:0 0 6px;font-size:17px;outline:none}
-.dlb h4{margin:16px 0 4px;font-size:13px;color:var(--mut)}
-.dlb p,.dlb li{font-size:14px;line-height:1.7}
-.dlb p{margin:6px 0}
-.dlb ul{margin:4px 0;padding-left:20px}
-.dlb .chk{display:flex;gap:10px;align-items:flex-start;margin:18px 0 14px;font-size:14px;line-height:1.5;cursor:pointer}
-.dlb .chk input{margin-top:3px;width:18px;height:18px;flex:none}
+.dlb h3{margin:0 0 14px;font-size:17px}
+.dlb p{margin:0 0 14px;font-size:14px;font-variant-numeric:tabular-nums}
 .dlb .acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .dlb .acts button{font:inherit;font-size:14px;font-weight:700;border-radius:999px;padding:11px 18px;cursor:pointer;border:1px solid var(--line);background:none;color:var(--fg)}
-.dlb .acts button.go{background:var(--acc);border-color:var(--acc);color:#fff}
-.dlb .acts button:disabled{opacity:.4;cursor:not-allowed}
-.prog{height:6px;margin:0 0 14px;background:var(--line);border-radius:999px;overflow:hidden}
-.prog[hidden]{display:none}
+.prog{height:6px;margin:0 0 10px;background:var(--line);border-radius:999px;overflow:hidden}
 .prog div{height:100%;width:0;background:var(--acc);border-radius:999px;transition:width .15s linear}
 </style>
 </head>
@@ -145,32 +125,10 @@ dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 </section>
 <dialog id="dl" aria-labelledby="dl-t">
 <div class="dlb">
-<h3 id="dl-t" tabindex="-1" autofocus>ダウンロード前にご確認ください</h3>
-<p>このページは、やじゅまん氏とは関係のない非公式のファンページです。以下は、同氏が示している利用ガイドラインの要点を抜き出して要約したものです。正確な内容と最新の条件は、同氏の発信で確認してください。</p>
-<p>保存するのは「<span id="dl-v">オリジナル版</span>」の動画です。ガイドラインは、この素材が淫夢コンテンツであると明記したうえで、ミームの性質を理解し、利用する場所、見せる相手、二次利用や収益化の有無を利用者自身で判断するよう求めています。</p>
-<h4>収益を得ない使い方</h4>
-<ul>
-<li>禁止事項に当たらない限り、転載、切り抜き、ループや速度変更などの加工、MADやリミックス、歌ってみた、踊ってみた、各種ページへの組み込みを、事前の連絡なしで認めています。</li>
-<li>無料で再配布する場合も、料金、会員登録、購入、投げ銭などの条件を付けてはならないとしています。</li>
-</ul>
-<h4>収益を得る使い方</h4>
-<ul>
-<li>歌ってみた、カバー、リミックス、曲そのものを聴かせる投稿などは、広告や報酬などの収益を得てはならないとされています。</li>
-<li>DJプレイの一曲としての再生や、短い動画での独自表現を中心にした一部使用など、ごく限られた使い方だけが連絡なしで認められています。</li>
-</ul>
-<h4>収益化の有無にかかわらず禁止されていること</h4>
-<ul>
-<li>音楽配信サービスへの登録や、音源の販売、有料配布、会員や購入の特典にすること</li>
-<li>企業や商品の広告、宣伝、スポンサー案件への使用</li>
-<li>Content IDなどの権利管理サービスへの登録、権利者や公式アーティストを装った表示</li>
-<li>素材に独自の利用制限や追加条件を付けること</li>
-</ul>
-<p>無断で登録された場合は、同氏がプラットフォームや配信事業者に取り下げを申請するとしています。</p>
-<h4>映像について</h4>
-<p>ガイドラインでは、公式MVの映像には第三者が権利を持つ素材が含まれることがあり、映像素材を包括的に利用許諾するものではないとしています。法令で許諾なしに認められている利用は、このガイドラインによって制限されません。</p>
-<label class="chk"><input type="checkbox" id="dlok"><span>上記の内容を読み、やじゅまん氏が示す利用条件を守ることを確認しました。</span></label>
-<div class="prog" id="dlprog" hidden><div id="dlbar"></div></div>
-<div class="acts"><button type="button" id="dlcancel">キャンセル</button><button type="button" class="go" id="dlgo" disabled>ダウンロードする</button></div>
+<h3 id="dl-t"><span id="dl-v">オリジナル版</span>をダウンロード中</h3>
+<div class="prog" id="dlprog"><div id="dlbar"></div></div>
+<p id="dlpct">0%</p>
+<div class="acts"><button type="button" id="dlcancel">キャンセル</button></div>
 </div>
 </dialog>
 </main>
@@ -213,26 +171,16 @@ document.addEventListener('shaka-ui-loaded',()=>{
     }catch(e){console.error(e)}
   };
   btns.forEach(b=>b.addEventListener('click',()=>switchTo(b.dataset.k)));
-  const dlg=document.getElementById('dl'),ok=document.getElementById('dlok'),go=document.getElementById('dlgo');
+  const dlg=document.getElementById('dl'),pct=document.getElementById('dlpct');
   const names={orig:['オリジナル版','INMU_KING_original.mp4'],rev:['修正版','INMU_KING_revised.mp4']};
-  document.getElementById('dlopen').addEventListener('click',()=>{
-    document.getElementById('dl-v').textContent=names[cur][0];
-    ok.checked=false;go.disabled=true;
-    dlg.showModal();
-    dlg.querySelector('.dlb').scrollTop=0;
-  });
-  ok.addEventListener('change',()=>{go.disabled=!ok.checked});
-  document.getElementById('dlcancel').addEventListener('click',()=>dlg.close());
-  dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
-  const prog=document.getElementById('dlprog'),bar=document.getElementById('dlbar');
+  const bar=document.getElementById('dlbar');
   let ctrl=null;
-  dlg.addEventListener('close',()=>{if(ctrl)ctrl.abort()});
-  go.addEventListener('click',async()=>{
+  const run=async()=>{
     const url=sources[cur],name=names[cur][1];
+    document.getElementById('dl-v').textContent=names[cur][0];
     ctrl=new AbortController();
-    go.disabled=true;ok.disabled=true;
-    prog.hidden=false;bar.style.width='0%';bar.style.opacity='1';
-    go.textContent='取得中 0%';
+    bar.style.width='0%';bar.style.opacity='1';pct.textContent='0%';
+    dlg.showModal();
     try{
       const r=await fetch(url,{signal:ctrl.signal});
       if(!r.ok)throw new Error(r.status);
@@ -246,11 +194,11 @@ document.addEventListener('shaka-ui-loaded',()=>{
           if(done)break;
           chunks.push(value);got+=value.length;
           if(total){
-            const pct=Math.floor(got/total*100);
-            bar.style.width=pct+'%';go.textContent='取得中 '+pct+'%';
+            const n=Math.floor(got/total*100);
+            bar.style.width=n+'%';pct.textContent=n+'%';
           }else{
             bar.style.width='100%';bar.style.opacity='.45';
-            go.textContent='取得中 '+(got/1048576).toFixed(1)+'MB';
+            pct.textContent=(got/1048576).toFixed(1)+'MB';
           }
         }
         blob=new Blob(chunks,{type:'video/mp4'});
@@ -266,15 +214,17 @@ document.addEventListener('shaka-ui-loaded',()=>{
       if(e.name!=='AbortError')window.open(url,'_blank','noopener');
     }finally{
       ctrl=null;
-      go.textContent='ダウンロードする';
-      ok.disabled=false;prog.hidden=true;
       if(dlg.open)dlg.close();
     }
-  });
+  };
+  document.getElementById('dlopen').addEventListener('click',run);
+  document.getElementById('dlcancel').addEventListener('click',()=>dlg.close());
+  dlg.addEventListener('cancel',()=>{if(ctrl)ctrl.abort()});
+  dlg.addEventListener('close',()=>{if(ctrl)ctrl.abort()});
   p.load(sources.orig,null,'video/mp4').catch(e=>console.error(e));
 });
 document.addEventListener('shaka-ui-load-failed',e=>console.error(e));
 </script>
-<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.7.11/dist/shaka-player.ui.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/shaka-player@5.3.6/dist/shaka-player.ui.js"></script>
 </body>
 </html>
