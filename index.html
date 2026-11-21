@@ -53,8 +53,11 @@ body{margin:0;overflow-x:hidden;overflow-x:clip;max-width:100%;background:var(--
 h1{font-size:clamp(40px,12vw,88px);line-height:.95;margin:0 0 6px;font-weight:900;letter-spacing:-.02em;text-transform:uppercase}
 h1 span{color:var(--acc)}
 .artist{color:var(--mut);margin:0 0 20px;font-size:15px;letter-spacing:.08em}
-.plyr{--plyr-color-main:var(--acc)}
-.info{margin-top:36px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.stage{aspect-ratio:16/9;background:#000;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 14px 36px rgba(0,0,0,.28)}
+.stage .plyr,.stage .plyr__video-wrapper,.stage video{width:100%;height:100%}
+.stage video{object-fit:contain}
+.plyr{--plyr-color-main:var(--acc);--plyr-font-family:inherit;--plyr-control-radius:10px}
+.info{margin-top:36px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
 .info dt{font-size:11px;letter-spacing:.12em;color:var(--mut);margin-bottom:3px}
 .info dd{margin:0;font-weight:700}
 .about{margin-top:22px;color:var(--mut);font-size:13px;line-height:1.8}
@@ -63,10 +66,14 @@ h1 span{color:var(--acc)}
 .ver{display:inline-flex;gap:4px;padding:4px;margin:0 0 14px;background:var(--card);border:1px solid var(--line);border-radius:999px}
 .ver button{font:inherit;font-size:13px;font-weight:700;color:var(--mut);background:none;border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
 .ver button.on{background:var(--acc);color:#fff}
-.tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 18px}
 .tools .ver{margin:0}
-.dlbtn{font:inherit;font-size:13px;font-weight:700;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:11px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.dlbtn{transition:border-color .15s,background .15s,color .15s;font:inherit;font-size:13px;font-weight:700;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:11px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 .dlbtn{text-decoration:none}
+.dlbtn:hover{border-color:var(--acc)}
+.dlbtn[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.dlbtn:focus-visible,.ver button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.ver button{transition:background .15s,color .15s}
 .dlbtn svg{width:16px;height:16px;fill:currentColor}
 dialog#dl{border:1px solid var(--line);border-radius:16px;padding:0;background:var(--card);color:var(--fg);width:min(520px,calc(100vw - 32px));max-height:calc(100dvh - 32px)}
 dialog#dl::backdrop{background:rgba(0,0,0,.6)}
@@ -89,6 +96,7 @@ dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 <div class="tools">
 <div class="ver" role="group" aria-label="バージョン切り替え"><button type="button" data-k="orig" class="on" aria-pressed="true">オリジナル版</button><button type="button" data-k="rev" aria-pressed="false">修正版</button></div>
 <button type="button" class="dlbtn" id="dlopen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v9.2l3.6-3.6L18 10l-6 6-6-6 1.4-1.4 3.6 3.6zM5 19h14v2H5z"/></svg>ダウンロード</button>
+<button type="button" class="dlbtn" id="loop" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v3l4-4-4-4v3H5v6h2zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2z"/></svg>ループ</button>
 <a class="dlbtn" id="xshare" href="https://x.com/intent/post?text=INMU%20KING%20%2F%20YAJU-MC%20MV&amp;url=https%3A%2F%2Finmu-king.pages.dev%2F" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Xでシェア</a>
 </div>
 
@@ -139,7 +147,14 @@ dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.8.5/dist/plyr.min.js"></script>
 <script>
 const v=document.getElementById('v');
-const player=new Plyr(v,{iconUrl:'https://cdn.jsdelivr.net/npm/plyr@3.8.5/dist/plyr.svg'});
+const player=new Plyr(v,{iconUrl:'https://cdn.jsdelivr.net/npm/plyr@3.8.5/dist/plyr.svg',i18n:{restart:'最初から',rewind:'{seektime}秒戻る',play:'再生',pause:'一時停止',fastForward:'{seektime}秒進む',seek:'シーク',seekLabel:'{duration}中{currentTime}',played:'再生済み',buffered:'バッファ済み',currentTime:'現在の時間',duration:'長さ',volume:'音量',mute:'ミュート',unmute:'ミュート解除',enableCaptions:'字幕をオンにする',disableCaptions:'字幕をオフにする',download:'ダウンロード',enterFullscreen:'全画面表示',exitFullscreen:'全画面を終了',frameTitle:'{title}のプレイヤー',captions:'字幕',settings:'設定',pip:'ピクチャインピクチャ',menuBack:'前のメニューに戻る',speed:'再生速度',normal:'標準',quality:'画質',loop:'ループ',start:'開始',end:'終了',all:'すべて',reset:'リセット',disabled:'無効',enabled:'有効',advertisement:'広告'}});
+const loopBtn=document.getElementById('loop');
+let looping=false;
+loopBtn.addEventListener('click',()=>{
+  looping=!looping;
+  player.loop=looping;
+  loopBtn.setAttribute('aria-pressed',looping);
+});
 const sources={orig:'https://files.catbox.moe/sbpso8.mp4',rev:'https://files.catbox.moe/2ytpxd.mp4'};
 const btns=document.querySelectorAll('.ver button');
 let cur='orig';
@@ -151,6 +166,7 @@ const switchTo=k=>{
   player.source={type:'video',sources:[{src:sources[k],type:'video/mp4'}]};
   player.once('loadedmetadata',()=>{
     player.currentTime=t;
+    player.loop=looping;
     if(playing)player.play();
   });
 };
