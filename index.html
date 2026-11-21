@@ -152,7 +152,7 @@ dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 <script>
 document.addEventListener('shaka-ui-loaded',()=>{
   const ui=document.getElementById('v').ui;
-  ui.configure({overflowMenuButtons:['loop','playback_rate','quality','captions-settings','language','picture_in_picture','cast']});
+  ui.configure({bigButtons:['play_pause'],showBufferingSpinner:true,overflowMenuButtons:['loop','playback_rate','quality','captions-settings','language','picture_in_picture','cast']});
   const a=getComputedStyle(document.documentElement).getPropertyValue('--acc').trim();
   ui.configure({seekBarColors:{base:'rgba(255,255,255,.25)',buffered:'rgba(255,255,255,.4)',played:a},volumeBarColors:{base:'rgba(255,255,255,.25)',level:a}});
   const p=ui.getControls().getPlayer();
@@ -224,7 +224,7 @@ document.addEventListener('shaka-ui-loaded',()=>{
   document.getElementById('dlcancel').addEventListener('click',()=>dlg.close());
   dlg.addEventListener('cancel',()=>{if(ctrl)ctrl.abort()});
   dlg.addEventListener('close',()=>{if(ctrl)ctrl.abort()});
-  p.load(sources.orig,null,'video/mp4').catch(e=>console.error(e));
+  p.load(sources.orig,0,'video/mp4').catch(e=>console.error(e));
 });
 document.addEventListener('shaka-ui-load-failed',e=>console.error(e));
 </script>
