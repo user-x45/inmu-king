@@ -102,7 +102,7 @@ dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 </div>
 
 <div class="stage">
-<video id="v" playsinline controls><source src="https://files.catbox.moe/sbpso8.mp4" type="video/mp4"></video>
+<video id="v" playsinline controls preload="auto"><source src="https://files.catbox.moe/sbpso8.mp4#t=0.001" type="video/mp4"></video>
 </div>
 
 <dl class="info">
@@ -167,6 +167,7 @@ const addLoopItem=()=>{
 };
 new MutationObserver(addLoopItem).observe(document.querySelector('.stage'),{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','aria-expanded']});
 addLoopItem();
+const sources={orig:'https://files.catbox.moe/sbpso8.mp4',rev:'https://files.catbox.moe/2ytpxd.mp4'};
 const btns=document.querySelectorAll('.ver button');
 let cur='orig';
 const switchTo=k=>{
