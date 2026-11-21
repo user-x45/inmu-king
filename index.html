@@ -58,7 +58,7 @@ h1 span{color:var(--acc)}
 .shaka-overflow-menu,.shaka-settings-menu{max-height:75%!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain}
 .shaka-overflow-menu button,.shaka-settings-menu button{flex-shrink:0}
 #c .shaka-play-button{background-color:var(--acc)!important;color:#fff}
-#c .shaka-spinner-path{stroke:var(--acc)!important}
+#c .shaka-spinner{color:var(--acc)}
 #c .shaka-controls-button-panel button:hover,#c .shaka-controls-button-panel .shaka-current-time:hover{color:var(--acc)}
 #c .shaka-overflow-menu button:hover,#c .shaka-settings-menu button:hover{background:rgba(255,255,255,.1)}
 #c .shaka-settings-menu button[aria-selected="true"] span,#c .shaka-overflow-menu .shaka-current-selection-span{color:var(--acc)}
@@ -148,22 +148,8 @@ dialog#dl::backdrop{background:rgba(0,0,0,.6)}
 </div>
 <script>
 document.addEventListener('shaka-ui-loaded',()=>{
-  class LoopButton extends shaka.ui.Element{
-    constructor(parent,controls){
-      super(parent,controls);
-      const v=controls.getVideo();
-      this.b=document.createElement('button');
-      const ic=document.createElement('span');ic.className='material-icons-round';ic.textContent='repeat';
-      const lb=document.createElement('div');lb.className='shaka-overflow-button-label';
-      const nm=document.createElement('span');nm.textContent='ループ再生';
-      this.st=document.createElement('span');this.st.className='shaka-current-selection-span';this.st.textContent='OFF';
-      lb.append(nm,this.st);this.b.append(ic,lb);parent.appendChild(this.b);
-      this.eventManager.listen(this.b,'click',()=>{v.loop=!v.loop;this.st.textContent=v.loop?'ON':'OFF';ic.style.color=v.loop?'var(--acc)':''});
-    }
-  }
-  shaka.ui.OverflowMenu.registerElement('loop',{create:(r,c)=>new LoopButton(r,c)});
   const ui=document.getElementById('v').ui;
-  ui.configure({overflowMenuButtons:['loop','playback_rate','quality','captions','language','picture_in_picture','cast']});
+  ui.configure({overflowMenuButtons:['loop','playback_rate','quality','captions-settings','language','picture_in_picture','cast']});
   const a=getComputedStyle(document.documentElement).getPropertyValue('--acc').trim();
   ui.configure({seekBarColors:{base:'rgba(255,255,255,.25)',buffered:'rgba(255,255,255,.4)',played:a},volumeBarColors:{base:'rgba(255,255,255,.25)',level:a}});
   const p=ui.getControls().getPlayer();
